@@ -668,29 +668,6 @@ export const Bot = (botProps: BotProps & { class?: string }) => {
     });
   };
 
-  const resizeImage = (file: File) => {
-    return new Promise<File>((resolve) => {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const img = new Image();
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          const ctx = canvas.getContext('2d');
-          if (!ctx) return;
-          canvas.width = 800;
-          canvas.height = (800 * img.height) / img.width;
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          canvas.toBlob((blob) => {
-            const resizedFile = new File([blob as Blob], file.name, { type: file.type });
-            resolve(resizedFile);
-          }, file.type);
-        };
-        img.src = e.target?.result as string;
-      };
-      reader.readAsDataURL(file);
-    });
-  };
-
   const handleFileUploads = async (uploads: IUploads) => {
     if (!uploadedFiles().length) return uploads;
 
@@ -699,7 +676,6 @@ export const Bot = (botProps: BotProps & { class?: string }) => {
 
       if (filesWithFullUploadType.length > 0) {
         const formData = new FormData();
-
 
         for (const file of filesWithFullUploadType) {
           // Resize image if file is image and larger than 0.5mb
@@ -796,6 +772,17 @@ export const Bot = (botProps: BotProps & { class?: string }) => {
         mime: item.mime,
       };
     });
+
+    console.log('uploads', uploads);
+    for (const upload of uploads) {
+      //get upload size
+      const uploadSize = new Blob([upload.data]).size;
+      console.log('upload', upload);
+      console.log('upload type', upload.type);
+      console.log('upload name', upload.name);
+      console.log('upload mime', upload.mime);
+      console.log('upload size', uploadSize);
+    }
 
     try {
       uploads = await handleFileUploads(uploads);
