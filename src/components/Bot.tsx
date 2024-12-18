@@ -669,7 +669,7 @@ export const Bot = (botProps: BotProps & { class?: string }) => {
         } else {
           const data = response.data as any;
           for (const extractedFileData of data) {
-            const content = extractedFileData.content;
+            const content = 'file data';
             const fileName = extractedFileData.name;
 
             // find matching name in previews and replace data with content
