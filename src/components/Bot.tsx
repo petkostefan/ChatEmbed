@@ -645,6 +645,29 @@ export const Bot = (botProps: BotProps & { class?: string }) => {
     });
   };
 
+  const resizeImage = (file: File) => {
+    return new Promise<File>((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          if (!ctx) return;
+          canvas.width = 800;
+          canvas.height = (800 * img.height) / img.width;
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          canvas.toBlob((blob) => {
+            const resizedFile = new File([blob as Blob], file.name, { type: file.type });
+            resolve(resizedFile);
+          }, file.type);
+        };
+        img.src = e.target?.result as string;
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
   const handleFileUploads = async (uploads: IUploads) => {
     if (!uploadedFiles().length) return uploads;
 
@@ -653,8 +676,15 @@ export const Bot = (botProps: BotProps & { class?: string }) => {
 
       if (filesWithFullUploadType.length > 0) {
         const formData = new FormData();
+
         for (const file of filesWithFullUploadType) {
-          formData.append('files', file.file);
+          // Resize image if file is image and larger than 0.5mb
+          if (file.file.size > 500000 && file.file.type.startsWith('image')) {
+            const resizedFile = await resizeImage(file.file);
+            formData.append('files', resizedFile);
+          } else {
+            formData.append('files', file.file);
+          }
         }
         formData.append('chatId', chatId());
 
