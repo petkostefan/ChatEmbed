@@ -128,7 +128,7 @@ export const TextInput = (props: TextInputProps) => {
   };
 
   const getFileType = () => {
-    if (props.isFullFileUpload) return '*';
+    if (props.isFullFileUpload) return 'image/*,application/pdf';
     if (props.uploadsConfig?.fileUploadSizeAndTypes?.length) {
       const allowedFileTypes = props.uploadsConfig?.fileUploadSizeAndTypes.map((allowed) => allowed.fileTypes).join(',');
       if (allowedFileTypes.includes('*')) return '*';

@@ -1134,6 +1134,7 @@ export const Bot = (botProps: BotProps & { class?: string }) => {
       });
     }
     if (fullFileUpload()) {
+      if (file.type.startsWith('image/') || file.type === 'application/pdf')
       return true;
     }
     if (uploadsConfig() && uploadsConfig()?.isRAGFileUploadAllowed && uploadsConfig()?.fileUploadSizeAndTypes) {
@@ -1149,7 +1150,7 @@ export const Bot = (botProps: BotProps & { class?: string }) => {
       }
     }
     if (!acceptFile) {
-      alert(`Cannot upload file. Kindly check the allowed file types and maximum allowed size.`);
+      alert(`Greška prilikom dodavanja datoteke. Molimo proverite tip i veličinu datoteke.`);
     }
     return acceptFile;
   };
