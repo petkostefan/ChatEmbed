@@ -1134,6 +1134,7 @@ export const Bot = (botProps: BotProps & { class?: string }) => {
       });
     }
     if (fullFileUpload()) {
+      if (file.type.startsWith('image/') || file.type === 'application/pdf')
       return true;
     }
     if (uploadsConfig() && uploadsConfig()?.isRAGFileUploadAllowed && uploadsConfig()?.fileUploadSizeAndTypes) {
